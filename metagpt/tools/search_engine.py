@@ -8,7 +8,7 @@
 import importlib
 from typing import Annotated, Callable, Coroutine, Literal, Optional, Union, overload
 
-from pydantic import BaseModel, ConfigDict, model_validator
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 from semantic_kernel.functions import kernel_function
 
 
