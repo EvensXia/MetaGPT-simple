@@ -13,6 +13,7 @@ import time
 from contextlib import asynccontextmanager
 from enum import Enum
 from typing import (
+    Any,
     AsyncGenerator,
     AsyncIterator,
     Dict,
@@ -121,7 +122,7 @@ def logfmt(props):
 
 
 class OpenAIResponse:
-    def __init__(self, data, headers):
+    def __init__(self, data: Union[bytes, Any], headers: dict):
         self._headers = headers
         self.data = data
 
@@ -319,49 +320,6 @@ class APIRequestor:
         )
         resp, got_stream = self._interpret_response(result, stream)
         return resp, got_stream, self.api_key
-
-    @overload
-    async def arequest(
-        self,
-        method,
-        url,
-        params,
-        headers,
-        files,
-        stream: Literal[True],
-        request_id: Optional[str] = ...,
-        request_timeout: Optional[Union[float, Tuple[float, float]]] = ...,
-    ) -> Tuple[AsyncGenerator[OpenAIResponse, None], bool, str]:
-        pass
-
-    @overload
-    async def arequest(
-        self,
-        method,
-        url,
-        params=...,
-        headers=...,
-        files=...,
-        *,
-        stream: Literal[True],
-        request_id: Optional[str] = ...,
-        request_timeout: Optional[Union[float, Tuple[float, float]]] = ...,
-    ) -> Tuple[AsyncGenerator[OpenAIResponse, None], bool, str]:
-        pass
-
-    @overload
-    async def arequest(
-        self,
-        method,
-        url,
-        params=...,
-        headers=...,
-        files=...,
-        stream: Literal[False] = ...,
-        request_id: Optional[str] = ...,
-        request_timeout: Optional[Union[float, Tuple[float, float]]] = ...,
-    ) -> Tuple[OpenAIResponse, bool, str]:
-        pass
 
     @overload
     async def arequest(
