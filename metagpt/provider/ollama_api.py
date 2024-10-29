@@ -48,7 +48,7 @@ class OllamaMessageBase:
             if tpe == "text":
                 return msg["text"], None
             elif tpe == "image_url":
-                return None, msg["image_url"]["url"][self._image_b64_rms:]
+                return None, msg["image_url"]["url"][self._image_b64_rms :]
             else:
                 raise ValueError
         else:
@@ -63,15 +63,9 @@ class OllamaMessageMeta(type):
         for base in bases:
             if issubclass(base, OllamaMessageBase):
                 api_type = attrs["api_type"]
-                if isinstance(api_type, list):
-                    for tpe in api_type:
-                        assert tpe not in OllamaMessageMeta.registed_message, "api_type already exist"
-                        assert isinstance(tpe, OllamaMessageAPI), "api_type not support"
-                        OllamaMessageMeta.registed_message[tpe] = cls
-                else:
-                    assert api_type not in OllamaMessageMeta.registed_message, "api_type already exist"
-                    assert isinstance(api_type, OllamaMessageAPI), "api_type not support"
-                    OllamaMessageMeta.registed_message[api_type] = cls
+                assert api_type not in OllamaMessageMeta.registed_message, "api_type already exist"
+                assert isinstance(api_type, OllamaMessageAPI), "api_type not support"
+                OllamaMessageMeta.registed_message[api_type] = cls
 
     @classmethod
     def get_message(cls, input_type: OllamaMessageAPI) -> type[OllamaMessageBase]:
@@ -101,9 +95,9 @@ class OllamaMessageChat(OllamaMessageBase, metaclass=OllamaMessageMeta):
         messes = []
         for prompt in prompts:
             if len(images) > 0:
-                messes.append({"role": "user", "content": "\n".join(prompts), "images": images})
+                messes.append({"role": "user", "content": prompt, "images": images})
             else:
-                messes.append({"role": "user", "content": "\n".join(prompts)})
+                messes.append({"role": "user", "content": prompt})
         sends = {"model": self.model, "messages": messes}
         sends.update(self.additional_kwargs)
         return sends
@@ -211,7 +205,8 @@ class OllamaLLM(BaseLLM):
         else:
             raise ValueError
 
-    def get_choice_text(self, rsp): return self.ollama_message.get_choice(rsp)
+    def get_choice_text(self, rsp):
+        return self.ollama_message.get_choice(rsp)
 
     async def acompletion(self, messages: list[dict], timeout=USE_CONFIG_TIMEOUT) -> dict:
         return await self._achat_completion(messages, timeout=self.get_timeout(timeout))
@@ -290,3 +285,6 @@ class OllamaEmbeddings(OllamaLLM):
 
     async def _achat_completion_stream(self, messages: list[dict], timeout: int = USE_CONFIG_TIMEOUT) -> str:
         return await self._achat_completion(messages, timeout=self.get_timeout(timeout))
+
+    def get_choice_text(self, rsp):
+        return rsp
