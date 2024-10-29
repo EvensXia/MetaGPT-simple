@@ -11,7 +11,6 @@ from typing import Annotated, Callable, Coroutine, Literal, Optional, Union, ove
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 from semantic_kernel.functions import kernel_function
 
-
 from metagpt.configs.search_config import SearchConfig
 from metagpt.logs import logger
 from metagpt.tools import SearchEngineType
