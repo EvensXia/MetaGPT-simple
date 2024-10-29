@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "metagpt-simple"
-version = "0.8.1"
+version = "0.8.1.20241029"
 description = "The Multi-Agent Framework"
 authors = ["Alexander Wu <alexanderwu@deepwisdom.ai>"]
 license = "MIT"
